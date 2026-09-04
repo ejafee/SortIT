@@ -168,15 +168,6 @@ Health check and configuration status.
 
 ---
 
-## 👥 Hackathon Team (Gayatama UNESA 2026)
-
-- **AI Integration & Prompt Engineering:** Gemini prompt design & schema constraints
-- **AI Testing, Accuracy & Waste DB:** Category definitions & testing datasets
-- **Research, SDGs & Localization:** SEA waste regulations & drop-off guidelines
-- **Lead Full-Stack Development:** Flask backend, modular ES-frontend & architecture
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

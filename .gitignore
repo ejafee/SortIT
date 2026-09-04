@@ -1,0 +1,11 @@
+# Ignore docs directory containing internal PRDs & specs
+docs/
+backend/logs/
+
+# Python / Environment / IDE
+__pycache__/
+*.pyc
+.env
+.vscode/
+.idea/
+.DS_Store

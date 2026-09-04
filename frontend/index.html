@@ -3,319 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SortIt — Sort Your Waste!</title>
+  <title>SortIt — AI Waste Classification</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --green:   #2ECC71;
-      --teal:    #1ABC9C;
-      --yellow:  #F9CA24;
-      --orange:  #F0932B;
-      --blue:    #686DE0;
-      --bg:      #F0FFF4;
-      --surface: #FFFFFF;
-      --text:    #1A2E22;
-      --muted:   #6B7B74;
-      --radius:  18px;
-    }
-
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* ── HEADER ── */
-    header {
-      background: linear-gradient(135deg, var(--green) 0%, var(--teal) 100%);
-      padding: 20px 24px 28px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    header::before {
-      content: '';
-      position: absolute;
-      width: 220px; height: 220px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 50%;
-      top: -60px; left: -60px;
-    }
-    header::after {
-      content: '';
-      position: absolute;
-      width: 160px; height: 160px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 50%;
-      bottom: -50px; right: -30px;
-    }
-    .logo {
-      font-size: 2.4rem;
-      font-weight: 900;
-      color: #fff;
-      letter-spacing: -1px;
-      position: relative;
-    }
-    .logo span { color: var(--yellow); }
-    .tagline {
-      font-size: 0.95rem;
-      color: rgba(255,255,255,0.88);
-      margin-top: 4px;
-      font-weight: 600;
-    }
-
-    /* ── XP BAR ── */
-    .xp-bar-wrap {
-      background: var(--surface);
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 2px solid #E8F5E9;
-    }
-    .xp-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--green);
-      white-space: nowrap;
-    }
-    .xp-track {
-      flex: 1;
-      height: 10px;
-      background: #E8F5E9;
-      border-radius: 99px;
-      overflow: hidden;
-    }
-    .xp-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--green), var(--yellow));
-      border-radius: 99px;
-      transition: width 0.8s cubic-bezier(.4,0,.2,1);
-    }
-    .xp-pts {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    .badge-row {
-      display: flex;
-      gap: 6px;
-      padding: 10px 20px 14px;
-      background: var(--surface);
-      overflow-x: auto;
-      border-bottom: 2px solid #E8F5E9;
-    }
-    .badge {
-      font-size: 1.3rem;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: #E8F5E9;
-      flex-shrink: 0;
-      transition: transform 0.2s;
-    }
-    .badge.earned { background: var(--yellow); transform: scale(1.1); }
-
-    /* ── MAIN ── */
-    main { padding: 20px 16px 100px; max-width: 520px; margin: 0 auto; }
-
-    /* ── UPLOAD ZONE ── */
-    .upload-card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 28px 20px;
-      text-align: center;
-      border: 3px dashed #A8E6CF;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      position: relative;
-    }
-    .upload-card:hover {
-      border-color: var(--green);
-      background: #F0FFF4;
-    }
-    .upload-icon { font-size: 3rem; display: block; margin-bottom: 10px; }
-    .upload-card h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 6px; }
-    .upload-card p { font-size: 0.85rem; color: var(--muted); margin-bottom: 18px; }
-    #file-input { display: none; }
-
-    .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-    .btn {
-      padding: 11px 22px;
-      border: none; border-radius: 99px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.9rem; font-weight: 800;
-      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
-      display: flex; align-items: center; gap: 7px;
-    }
-    .btn:active { transform: scale(0.96); }
-    .btn-green  { background: var(--green); color: #fff; box-shadow: 0 4px 14px rgba(46,204,113,0.35); }
-    .btn-blue   { background: var(--blue);  color: #fff; box-shadow: 0 4px 14px rgba(104,109,224,0.35); }
-    .btn-orange { background: var(--orange);color: #fff; box-shadow: 0 4px 14px rgba(240,147,43,0.35); }
-    .btn-ghost  { background: #E8F5E9; color: var(--green); }
-
-    /* ── PREVIEW ── */
-    #preview-wrap {
-      display: none;
-      margin-top: 16px;
-      border-radius: var(--radius);
-      overflow: hidden;
-      position: relative;
-    }
-    #preview-img {
-      width: 100%; max-height: 280px;
-      object-fit: cover; display: block;
-    }
-    .preview-overlay {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.55));
-      padding: 14px 16px 12px;
-      display: flex; justify-content: space-between; align-items: flex-end;
-    }
-    .preview-overlay span { color: #fff; font-size: 0.82rem; font-weight: 700; }
-
-    /* ── CAMERA ── */
-    #camera-wrap {
-      display: none;
-      margin-top: 16px;
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-    #camera-feed {
-      width: 100%; max-height: 280px;
-      object-fit: cover; display: block; background: #000;
-    }
-    .camera-controls {
-      background: #1A2E22;
-      padding: 12px 16px;
-      display: flex; gap: 10px; justify-content: center;
-    }
-
-    /* ── ANALYZE BTN ── */
-    #analyze-btn {
-      display: none;
-      width: 100%; margin-top: 14px;
-      padding: 15px;
-      font-size: 1rem; font-weight: 900;
-      background: linear-gradient(135deg, var(--green), var(--teal));
-      color: #fff; border: none; border-radius: 99px; cursor: pointer;
-      box-shadow: 0 6px 20px rgba(46,204,113,0.4);
-      letter-spacing: 0.5px;
-      transition: transform 0.15s;
-    }
-    #analyze-btn:active { transform: scale(0.97); }
-    #analyze-btn.loading { opacity: 0.75; cursor: not-allowed; }
-
-    /* ── RESULT CARD ── */
-    #result-card {
-      display: none;
-      margin-top: 20px;
-      background: var(--surface);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.07);
-    }
-    .result-header {
-      padding: 18px 20px 14px;
-      display: flex; align-items: center; gap: 14px;
-    }
-    .waste-icon {
-      width: 58px; height: 58px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.8rem; flex-shrink: 0;
-    }
-    .result-title { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .result-name  { font-size: 1.3rem; font-weight: 900; margin-top: 2px; }
-    .result-sub   { font-size: 0.82rem; color: var(--muted); margin-top: 2px; font-weight: 600; }
-
-    .result-body { padding: 0 20px 20px; }
-    .section-label {
-      font-size: 0.72rem; font-weight: 800;
-      color: var(--muted); text-transform: uppercase;
-      letter-spacing: 0.6px; margin: 16px 0 8px;
-    }
-    .instruction-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .instruction-list li {
-      background: #F0FFF4;
-      border-left: 4px solid var(--green);
-      padding: 10px 12px;
-      border-radius: 0 10px 10px 0;
-      font-size: 0.88rem; font-weight: 600;
-    }
-    .tip-box {
-      background: #FFFDE7;
-      border-left: 4px solid var(--yellow);
-      border-radius: 0 10px 10px 0;
-      padding: 10px 12px;
-      font-size: 0.85rem; font-weight: 600; color: #6D5B00;
-      margin-top: 8px;
-    }
-    .confidence-row {
-      display: flex; align-items: center; gap: 10px; margin-top: 14px;
-    }
-    .confidence-label { font-size: 0.78rem; font-weight: 700; color: var(--muted); width: 80px; }
-    .conf-track {
-      flex: 1; height: 8px;
-      background: #E8F5E9; border-radius: 99px; overflow: hidden;
-    }
-    .conf-fill {
-      height: 100%; border-radius: 99px;
-      background: linear-gradient(90deg, var(--green), var(--yellow));
-    }
-    .conf-pct { font-size: 0.78rem; font-weight: 800; color: var(--green); }
-
-    .xp-toast {
-      display: none;
-      margin-top: 14px;
-      background: linear-gradient(135deg, var(--yellow), var(--orange));
-      color: #fff;
-      border-radius: 99px;
-      padding: 10px 18px;
-      text-align: center;
-      font-size: 0.9rem; font-weight: 800;
-      animation: pop 0.4s cubic-bezier(.4,0,.2,1);
-    }
-    @keyframes pop {
-      0%   { transform: scale(0.7); opacity: 0; }
-      70%  { transform: scale(1.07); }
-      100% { transform: scale(1);   opacity: 1; }
-    }
-
-    /* ── HOW IT WORKS ── */
-    .how-section { margin-top: 28px; }
-    .how-section h3 { font-size: 1rem; font-weight: 900; margin-bottom: 14px; }
-    .steps { display: flex; gap: 10px; }
-    .step {
-      flex: 1; background: var(--surface);
-      border-radius: 14px; padding: 14px 10px;
-      text-align: center;
-    }
-    .step-emoji { font-size: 1.6rem; display: block; margin-bottom: 6px; }
-    .step p { font-size: 0.78rem; font-weight: 700; color: var(--muted); line-height: 1.35; }
-
-    /* ── FOOTER ── */
-    footer {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--surface);
-      border-top: 2px solid #E8F5E9;
-      padding: 10px 16px;
-      text-align: center;
-      font-size: 0.72rem;
-      color: var(--muted); font-weight: 600;
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 400px) {
-      .steps { flex-direction: column; }
-      .logo { font-size: 2rem; }
-    }
-  </style>
+  <link rel="stylesheet" href="./css/style.css"/>
 </head>
 <body>
 
@@ -325,383 +15,159 @@
   <p class="tagline">Scan your waste. Save the planet.</p>
 </header>
 
-<!-- XP BAR -->
-<div class="xp-bar-wrap">
-  <span class="xp-label">♻️ Level 1</span>
-  <div class="xp-track"><div class="xp-fill" id="xp-fill"></div></div>
-  <span class="xp-pts" id="xp-pts">0 / 100 XP</span>
-</div>
-<div class="badge-row" id="badge-row">
-  <div class="badge" title="First Scan">🔍</div>
-  <div class="badge" title="Plastic Hero">🧴</div>
-  <div class="badge" title="Paper Saver">📄</div>
-  <div class="badge" title="Glass Guardian">🫙</div>
-  <div class="badge" title="Eco Warrior">🌿</div>
-</div>
+<!-- NAV TABS -->
+<nav class="nav-tabs">
+  <button class="nav-tab active" data-tab="scan">📷 Scan</button>
+  <button class="nav-tab" data-tab="history">📋 History</button>
+  <button class="nav-tab" data-tab="stats">📊 Stats</button>
+</nav>
 
-<!-- MAIN -->
+<!-- MAIN CONTAINER -->
 <main>
 
-  <!-- SCAN CARD -->
-  <div class="upload-card" id="drop-zone">
-    <span class="upload-icon">🗑️</span>
-    <h2>What's this waste?</h2>
-    <p>Point your camera at the waste item and take a photo to identify it.</p>
-    <div class="btn-row">
-      <button class="btn btn-blue" id="camera-btn">
-        📷 Open Camera
-      </button>
+  <!-- TAB 1: SCAN -->
+  <div class="tab-content active" id="tab-scan">
+    <div class="upload-card">
+      <span class="upload-icon">🗑️</span>
+      <h2>What's this waste?</h2>
+      <p>Point your camera at the waste item and take a photo to identify it.</p>
+      <div class="btn-row">
+        <button class="btn btn-blue" id="camera-btn">📷 Open Camera</button>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div id="preview-wrap">
+      <img id="preview-img" src="" alt="Waste preview" />
+      <div class="preview-overlay">
+        <span>Your photo</span>
+        <button class="btn btn-ghost" id="reset-btn" style="padding:6px 14px;font-size:0.78rem">✕ Remove</button>
+      </div>
+    </div>
+
+    <!-- CAMERA -->
+    <div id="camera-wrap">
+      <video id="camera-feed" autoplay playsinline></video>
+      <div class="camera-controls">
+        <button class="btn btn-green" id="snap-btn">📸 Snap Photo</button>
+        <button class="btn btn-ghost" id="close-cam-btn">✕ Close</button>
+      </div>
+    </div>
+
+    <!-- ANALYZE BUTTON -->
+    <button id="analyze-btn">🔍 Identify This Waste!</button>
+
+    <!-- ERROR BANNER -->
+    <div class="error-banner" id="error-banner"></div>
+
+    <!-- RESULT CARD -->
+    <div id="result-card">
+      <div class="result-header" id="result-header">
+        <div class="waste-icon" id="waste-icon"></div>
+        <div>
+          <div class="result-title">Waste Identified</div>
+          <div class="result-name" id="result-name"></div>
+          <div class="result-sub"  id="result-sub"></div>
+        </div>
+      </div>
+      <div class="result-body">
+        <div class="warning-banner" id="warning-banner">
+          ⚠️ We're not fully sure about this item — please double-check before disposing or correct below.
+        </div>
+        <div class="confidence-row">
+          <span class="confidence-label">Confidence</span>
+          <div class="conf-track"><div class="conf-fill" id="conf-fill"></div></div>
+          <span class="conf-pct" id="conf-pct"></span>
+        </div>
+        <div class="section-label">How to dispose it</div>
+        <ul class="instruction-list" id="instruction-list"></ul>
+        <div class="tip-box" id="tip-box"></div>
+
+        <!-- CORRECTION SECTION -->
+        <div class="correction-box">
+          <button class="btn btn-outline" id="correct-toggle-btn" style="width:100%;justify-content:center;font-size:0.82rem">
+            ✏️ This look wrong? Suggest a correction
+          </button>
+          <div class="correction-form" id="correction-form">
+            <label for="correct-type">Correct Waste Type:</label>
+            <select id="correct-type"></select>
+            <label for="correct-note">Note (optional):</label>
+            <textarea id="correct-note" rows="2" placeholder="e.g. Actually a glass bottle..."></textarea>
+            <button class="btn btn-orange" id="submit-correction-btn" style="width:100%;justify-content:center;font-size:0.82rem">
+              Submit Correction
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-top:16px">
+          <button class="btn btn-green" style="width:100%;justify-content:center" onclick="location.reload()">
+            🔄 Scan Another Item
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="how-section">
+      <h3>How it works</h3>
+      <div class="steps">
+        <div class="step">
+          <span class="step-emoji">📸</span>
+          <p>Take a photo of your waste using your camera</p>
+        </div>
+        <div class="step">
+          <span class="step-emoji">🤖</span>
+          <p>AI identifies the waste type instantly</p>
+        </div>
+        <div class="step">
+          <span class="step-emoji">♻️</span>
+          <p>Follow easy disposal instructions</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- IMAGE PREVIEW -->
-  <div id="preview-wrap">
-    <img id="preview-img" src="" alt="Waste preview" />
-    <div class="preview-overlay">
-      <span>Your photo</span>
-      <button class="btn btn-ghost" style="padding:6px 14px;font-size:0.78rem" onclick="resetAll()">✕ Remove</button>
+  <!-- TAB 2: HISTORY -->
+  <div class="tab-content" id="tab-history">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 style="font-size:1.1rem;font-weight:900">Scan History</h3>
+      <button class="btn btn-danger" id="clear-history-btn" style="padding:6px 12px;font-size:0.75rem">🗑️ Clear History</button>
     </div>
+    <div class="history-list" id="history-list"></div>
   </div>
 
-  <!-- CAMERA -->
-  <div id="camera-wrap">
-    <video id="camera-feed" autoplay playsinline></video>
-    <div class="camera-controls">
-      <button class="btn btn-green" id="snap-btn">📸 Snap Photo</button>
-      <button class="btn btn-ghost" id="close-cam-btn">✕ Close</button>
-    </div>
-  </div>
-
-  <!-- ANALYZE BUTTON -->
-  <button id="analyze-btn" onclick="analyzeWaste()">🔍 Identify This Waste!</button>
-
-  <!-- RESULT CARD -->
-  <div id="result-card">
-    <div class="result-header" id="result-header">
-      <div class="waste-icon" id="waste-icon"></div>
-      <div>
-        <div class="result-title">Waste Identified</div>
-        <div class="result-name" id="result-name"></div>
-        <div class="result-sub"  id="result-sub"></div>
+  <!-- TAB 3: STATS -->
+  <div class="tab-content" id="tab-stats">
+    <h3 style="font-size:1.1rem;font-weight:900;margin-bottom:14px">Waste Statistics</h3>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="stat-total">0</div>
+        <div class="stat-lbl">Total Scans</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-avg-conf">—</div>
+        <div class="stat-lbl">Avg Confidence</div>
+      </div>
+      <div class="stat-card" style="grid-column: span 2">
+        <div class="stat-val" id="stat-corrections">0</div>
+        <div class="stat-lbl">Corrections Made</div>
       </div>
     </div>
-    <div class="result-body">
-      <div class="confidence-row">
-        <span class="confidence-label">Confidence</span>
-        <div class="conf-track"><div class="conf-fill" id="conf-fill"></div></div>
-        <span class="conf-pct" id="conf-pct"></span>
-      </div>
-      <div class="section-label">How to dispose it</div>
-      <ul class="instruction-list" id="instruction-list"></ul>
-      <div class="tip-box" id="tip-box"></div>
-      <div class="xp-toast" id="xp-toast"></div>
-      <div style="margin-top:16px">
-        <button class="btn btn-orange" style="width:100%;justify-content:center" onclick="resetAll()">
-          🔄 Scan Another Item
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- HOW IT WORKS -->
-  <div class="how-section">
-    <h3>How it works</h3>
-    <div class="steps">
-      <div class="step">
-        <span class="step-emoji">📸</span>
-        <p>Take a photo of your waste using your camera</p>
-      </div>
-      <div class="step">
-        <span class="step-emoji">🤖</span>
-        <p>AI identifies the waste type instantly</p>
-      </div>
-      <div class="step">
-        <span class="step-emoji">♻️</span>
-        <p>Follow easy disposal instructions</p>
-      </div>
+    <div class="chart-card">
+      <div class="section-label" style="margin-top:0;margin-bottom:12px">Scans by Category</div>
+      <div id="chart-bars"></div>
     </div>
   </div>
 
 </main>
 
-<footer>⚠️ SortIt is a guide only, not official advice. Always follow your local waste regulations.</footer>
+<footer>⚠️ SortIt is a guide only. Always follow your local waste regulations.</footer>
 
-<!-- CANVAS (hidden, for camera snap) -->
+<!-- HIDDEN CANVAS FOR CAMERA SNAP -->
 <canvas id="snap-canvas" style="display:none"></canvas>
 
-<script>
-  // ── STATE ──
-  let xp = 0;
-  let scanCount = 0;
-  let stream = null;
-  let capturedBlob = null;
+<!-- ES MODULE ENTRYPOINT -->
+<script type="module" src="./js/app.js"></script>
 
-  // ── WASTE DATA (demo / mock) ──
-  const wasteDB = {
-    plastic: {
-      name: "Plastic",
-      sub: "Type 2 HDPE — Recyclable",
-      icon: "🧴",
-      color: "#3498DB",
-      bg: "#EBF5FB",
-      instructions: [
-        "Rinse the item to remove food residue.",
-        "Check for the recycling symbol (♻️) on the bottom.",
-        "Place in the blue recycling bin.",
-        "Do NOT throw in general waste bin."
-      ],
-      tip: "💡 Tip: Crush plastic bottles to save space in your recycling bin!",
-      confidence: 91
-    },
-    paper: {
-      name: "Paper / Cardboard",
-      sub: "Recyclable — Keep dry",
-      icon: "📄",
-      color: "#F39C12",
-      bg: "#FEF9E7",
-      instructions: [
-        "Flatten cardboard boxes before recycling.",
-        "Keep paper dry — wet paper cannot be recycled.",
-        "Remove any plastic wrapping or tape.",
-        "Place in the yellow recycling bin."
-      ],
-      tip: "💡 Tip: One recycled newspaper saves enough energy to power a light bulb for 3 hours!",
-      confidence: 88
-    },
-    glass: {
-      name: "Glass",
-      sub: "Recyclable — Handle with care",
-      icon: "🫙",
-      color: "#1ABC9C",
-      bg: "#E8F8F5",
-      instructions: [
-        "Rinse glass bottles and jars thoroughly.",
-        "Remove lids and caps (recycle separately).",
-        "Wrap broken glass in newspaper before disposal.",
-        "Place in the glass recycling bin."
-      ],
-      tip: "💡 Tip: Glass can be recycled infinitely without losing quality!",
-      confidence: 85
-    },
-    organic: {
-      name: "Organic Waste",
-      sub: "Compostable",
-      icon: "🌿",
-      color: "#2ECC71",
-      bg: "#EAFAF1",
-      instructions: [
-        "Separate food scraps from packaging.",
-        "Place in a compost bin if available.",
-        "Do not mix with plastics or metals.",
-        "Organic waste bin is usually brown or green."
-      ],
-      tip: "💡 Tip: Composting food waste creates nutrient-rich soil for gardening!",
-      confidence: 93
-    },
-    ewaste: {
-      name: "Electronic Waste",
-      sub: "Hazardous — Special disposal needed",
-      icon: "📱",
-      color: "#9B59B6",
-      bg: "#F5EEF8",
-      instructions: [
-        "Never throw e-waste in regular bins.",
-        "Bring to an authorized e-waste collection point.",
-        "Remove batteries before disposal if possible.",
-        "Check for manufacturer take-back programs."
-      ],
-      tip: "⚠️ E-waste contains toxic materials like lead and mercury. Dispose responsibly!",
-      confidence: 89
-    },
-    hazardous: {
-      name: "Hazardous Waste",
-      sub: "Special handling required",
-      icon: "⚠️",
-      color: "#E74C3C",
-      bg: "#FDEDEC",
-      instructions: [
-        "Never pour chemicals down the drain.",
-        "Keep in original container if possible.",
-        "Bring to a hazardous waste facility.",
-        "Do not mix with other waste types."
-      ],
-      tip: "⚠️ Hazardous waste includes batteries, paint, and cleaning chemicals.",
-      confidence: 82
-    }
-  };
-
-  const wasteKeys = Object.keys(wasteDB);
-
-  // ── (Upload & drag-drop removed — camera only) ──
-
-  // ── CAMERA ──
-  document.getElementById('camera-btn').addEventListener('click', async () => {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      document.getElementById('camera-feed').srcObject = stream;
-      document.getElementById('camera-wrap').style.display = 'block';
-      document.getElementById('analyze-btn').style.display = 'none';
-    } catch {
-      alert('Camera not accessible. Please use the upload option instead.');
-    }
-  });
-
-  document.getElementById('snap-btn').addEventListener('click', () => {
-    const video  = document.getElementById('camera-feed');
-    const canvas = document.getElementById('snap-canvas');
-    canvas.width  = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    canvas.toBlob(blob => {
-      capturedBlob = blob;
-      showPreview(canvas.toDataURL('image/jpeg'));
-      stopCamera();
-    }, 'image/jpeg', 0.9);
-  });
-
-  document.getElementById('close-cam-btn').addEventListener('click', stopCamera);
-
-  function stopCamera() {
-    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-    document.getElementById('camera-wrap').style.display = 'none';
-  }
-
-  // ── SHOW PREVIEW ──
-  function showPreview(src) {
-    document.getElementById('preview-img').src = src;
-    document.getElementById('preview-wrap').style.display = 'block';
-    document.getElementById('analyze-btn').style.display = 'block';
-    document.getElementById('result-card').style.display = 'none';
-  }
-
-  // ── WARNA & IKON PER JENIS SAMPAH ──
-  // Karena Gemini balas teks biasa, kita tentukan warna & ikon sendiri di sini
-  const wasteStyle = {
-    plastic:   { icon: '🧴', color: '#3498DB', bg: '#EBF5FB' },
-    paper:     { icon: '📄', color: '#F39C12', bg: '#FEF9E7' },
-    glass:     { icon: '🫙', color: '#1ABC9C', bg: '#E8F8F5' },
-    organic:   { icon: '🌿', color: '#2ECC71', bg: '#EAFAF1' },
-    ewaste:    { icon: '📱', color: '#9B59B6', bg: '#F5EEF8' },
-    hazardous: { icon: '⚠️', color: '#E74C3C', bg: '#FDEDEC' },
-    unknown:   { icon: '❓', color: '#95A5A6', bg: '#F2F3F4' },
-  };
-
-  // ── ANALYZE — Kirim foto ke Flask backend ──
-  async function analyzeWaste() {
-    // Cek dulu ada foto atau tidak
-    if (!capturedBlob) {
-      alert('Ambil foto dulu ya!');
-      return;
-    }
-
-    const btn = document.getElementById('analyze-btn');
-    btn.textContent = '⏳ Analyzing...';
-    btn.classList.add('loading');
-    btn.disabled = true;
-
-    try {
-      // 1. Bungkus foto dalam FormData (seperti mengisi form di web)
-      const formData = new FormData();
-      formData.append('image', capturedBlob, 'waste.jpg');
-
-      // 2. Kirim foto ke backend Flask kita
-      //    fetch() = cara JavaScript kirim request ke server
-      const response = await fetch('http://localhost:5000/analyze', {
-        method: 'POST',   // POST = kita kirim data
-        body: formData    // isi datanya = foto tadi
-      });
-
-      // 3. Baca jawaban dari backend (dalam format JSON)
-      const data = await response.json();
-
-      // 4. Kalau backend balas error, tampilkan pesannya
-      if (data.error) {
-        alert('Error: ' + data.error);
-        return;
-      }
-
-      // 5. Tampilkan hasilnya!
-      showResult(data);
-
-    } catch (err) {
-      // Kalau tidak bisa hubungi backend sama sekali
-      alert('Tidak bisa hubungi backend. Pastikan app.py sudah dijalankan ya!');
-      console.error(err);
-    } finally {
-      // Kembalikan tombol ke normal
-      btn.textContent = '🔍 Identify This Waste!';
-      btn.classList.remove('loading');
-      btn.disabled = false;
-    }
-  }
-
-  // ── SHOW RESULT — Tampilkan jawaban dari Gemini ──
-  function showResult(data) {
-    // Ambil style (warna & ikon) berdasarkan jenis sampah dari Gemini
-    const style = wasteStyle[data.waste_type] || wasteStyle['unknown'];
-
-    // Tampilkan ikon & warna
-    const icon = document.getElementById('waste-icon');
-    icon.textContent      = style.icon;
-    icon.style.background = style.bg;
-
-    // Tampilkan nama & detail sampah
-    document.getElementById('result-name').textContent = data.waste_name || 'Unknown Waste';
-    document.getElementById('result-sub').textContent  = data.waste_detail || '';
-    document.getElementById('result-header').style.borderBottom = `3px solid ${style.color}`;
-
-    // Tampilkan confidence bar
-    const conf = data.confidence || 0;
-    document.getElementById('conf-fill').style.width = conf + '%';
-    document.getElementById('conf-pct').textContent  = conf + '%';
-
-    // Tampilkan instruksi buang sampah (dari Gemini)
-    const ul = document.getElementById('instruction-list');
-    ul.innerHTML = '';
-    (data.instructions || []).forEach(step => {
-      const li = document.createElement('li');
-      li.textContent = step;
-      ul.appendChild(li);
-    });
-
-    // Tampilkan tip
-    document.getElementById('tip-box').textContent = data.tip || '';
-
-    // Beri XP ke user
-    const earned = 10 + Math.floor(Math.random() * 11);
-    xp = Math.min(xp + earned, 100);
-    scanCount++;
-    updateXP();
-
-    const toast = document.getElementById('xp-toast');
-    toast.textContent = `+${earned} XP earned! Great job! 🎉`;
-    toast.style.display = 'block';
-
-    // Unlock badge scan pertama
-    if (scanCount === 1) {
-      document.querySelectorAll('.badge')[0].classList.add('earned');
-    }
-
-    document.getElementById('result-card').style.display = 'block';
-    document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // ── XP ──
-  function updateXP() {
-    document.getElementById('xp-fill').style.width = xp + '%';
-    document.getElementById('xp-pts').textContent  = `${xp} / 100 XP`;
-  }
-
-  // ── RESET ──
-  function resetAll() {
-    capturedBlob = null;
-    document.getElementById('preview-wrap').style.display = 'none';
-    document.getElementById('analyze-btn').style.display  = 'none';
-    document.getElementById('result-card').style.display  = 'none';
-    document.getElementById('xp-toast').style.display     = 'none';
-    stopCamera();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-</script>
 </body>
 </html>

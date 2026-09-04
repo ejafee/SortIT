@@ -1,122 +1,182 @@
-# SortIt — AI-Powered Waste Classification
+# SortIt ♻️ — AI-Powered Waste Classification Web App
 
-> *Scan your waste. Save the planet. ♻️*
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.0%2B-lightgrey.svg)](https://flask.palletsprojects.com/)
+[![Google Gemini](https://img.shields.io/badge/AI-Google%20Gemini-orange.svg)](https://ai.google.dev/)
 
-Mobile-friendly web app that identifies waste from a camera photo and tells you how to dispose of it properly. Hackathon submission — team of 4, Sep 1–20.
+> **"Scan your waste. Save the planet."**  
+> A mobile-friendly web application that accurately identifies waste types from camera captures using Google Gemini Vision, providing localized disposal and recycling instructions for communities across Malaysia and Indonesia.
 
 ---
 
-## What it is
+## 📌 Problem & Impact
 
-Web-based app where you point your camera at a waste item and get instant AI classification + disposal instructions. Built for Malaysia & Indonesia.
+Improper waste management in Southeast Asia leads to recyclable materials filling up landfills. Everyday consumers often lack accessible, instant guidance on correct segregation. **SortIt** bridges this gap by turning any smartphone camera into an intelligent recycling assistant aligned with:
 
-## Problem
+- **SDG 11:** Sustainable Cities and Communities
+- **SDG 12:** Responsible Consumption and Production
+- **SDG 13:** Climate Action
 
-Improper waste disposal → recyclables end up in landfills. No simple tool guides everyday users on correct sorting.
+---
 
-## Target Users
+## 🌟 Key Features
 
-- General public in Malaysia & Indonesia
-- Language: English
-- Platform: web, mobile-friendly
+- 📸 **Camera-Only Capture:** Live camera capture flow designed to encourage real-world waste scanning.
+- 🤖 **Gemini AI Classification:** Vision-based classification across 7 categories (`plastic`, `paper`, `glass`, `organic`, `ewaste`, `hazardous`, `unknown`).
+- 🎯 **Confidence Scoring & Threshold Alerts:** Transparent model-reported accuracy percentage, displaying warning banners if below threshold (<60%).
+- ✏️ **Manual Correction & Feedback Loop:** Users can suggest corrections which are logged to an audit trail (`POST /correct`) for dataset improvement.
+- 📊 **Scan History & Stats Dashboard:** Client-side scan log and breakdown chart (backed by an abstracted storage interface).
+- 🛡️ **Production-Grade Architecture:** Custom exception hierarchy, typed Python backend, structured rotating file logging, and comprehensive `pytest` test suite.
 
-## How it works
+---
 
-1. Take photo via camera
-2. AI classifies waste (`plastic` / `paper` / `glass` / `organic` / `ewaste` / `hazardous` / `unknown`)
-3. Show disposal steps + tip + confidence + gamified XP/badges
-
-## SDG Alignment
-
-- **SDG 11** Sustainable Cities & Communities
-- **SDG 12** Responsible Consumption & Production
-- **SDG 13** Climate Action
-
-## Features
-
-**MVP (built):**
-
-- Camera-only capture (upload disabled to prevent fake photos)
-- Gemini Vision classification
-- Result: name, type, detail, confidence bar, instructions, tip
-- Playful UI with XP bar & badges
-- Disclaimer: guidance only
-
-**Bonus (planned):**
-
-- Nearby recycling centers map (Google Maps API)
-- Per-user scan history
-- Stats dashboard
-- Result caching to save quota
-
-## Tech Stack (as built)
-
-**Frontend:** plain `frontend/index.html` — HTML/CSS/JS, no framework, `fetch('http://localhost:5000/analyze')`
-
-**Backend:** Python Flask — `backend/app.py`, `google-genai` (`from google import genai`, model `gemini-3.6-flash`), `POST /analyze` + `GET /`
-
-**Packages:** `flask`, `flask-cors`, `google-genai`, `python-dotenv`
-
-**Planned originally:** React or plain HTML/CSS/JS, Flask or Node.js, Gemini Vision free tier, Google Maps API, Vercel/Netlify + Render, GitHub.
-
-## Folder Structure
+## 🏗️ Architecture & Folder Structure
 
 ```
-sortit/
+SortIT/
+├── LICENSE
+├── README.md
+├── .gitignore                      # Ignores internal docs/ and cache
 ├── frontend/
-│   └── index.html
-├── backend/
-│   ├── app.py
-│   └── .env              # GEMINI_API_KEY — gitignored, never commit
-├── .gitignore
-└── README.md
+│   ├── index.html                  # Semantic UI shell with tab navigation
+│   ├── css/
+│   │   └── style.css               # Responsive design & gamified styles
+│   └── js/
+│       ├── app.js                  # Application bootstrap & event listeners
+│       ├── api.js                  # Fetch wrapper for /analyze and /correct
+│       ├── ui.js                   # DOM rendering, state & error handling
+│       ├── storage.js              # Storage interface & localStorage adapter
+│       └── stats.js                # History log and dynamic category charts
+└── backend/
+    ├── app.py                      # Flask routes (/analyze, /correct, /)
+    ├── classifier.py               # Gemini Vision client & schema validation
+    ├── exceptions.py               # Typed custom exception hierarchy
+    ├── logging_config.py           # RotatingFileHandler logging setup
+    ├── storage_interface.py        # Abstract Base Class for audit backends
+    ├── requirements.txt            # Pinned dependencies
+    ├── pytest.ini                  # Test configuration
+    ├── .env.example                # Configuration template
+    ├── .env                        # Local secrets (gitignored)
+    ├── logs/                       # Rotating app logs & audit trail (gitignored)
+    └── tests/
+        ├── test_exceptions.py      # Exception hierarchy tests
+        ├── test_classifier.py      # Schema parser & normalization tests
+        └── test_app_routes.py      # Route integration tests (mocked Gemini)
 ```
 
-## Gemini JSON Response
+---
 
-```json
-{
-  "waste_type": "plastic|paper|glass|organic|ewaste|hazardous|unknown",
-  "waste_name": "Plastic Bottle",
-  "waste_detail": "Type 2 HDPE Plastic",
-  "confidence": 91,
-  "instructions": ["step 1", "step 2", "step 3"],
-  "tip": "one useful tip"
-}
-```
+## 🚀 Getting Started
 
-## Run Locally
+### Prerequisites
+- Python 3.10 or higher
+- A modern browser with camera permissions enabled
+- A [Google AI Studio Gemini API Key](https://aistudio.google.com/)
+
+### 1. Backend Setup
 
 ```bash
 cd backend
-# create .env with GEMINI_API_KEY=...
-python app.py          # http://localhost:5000
-# open frontend/index.html in browser
+
+# Create and activate virtual environment
+python -m venv venv
+# Windows:
+.\venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment variables
+cp .env.example .env
 ```
 
-> Correct import is `from google import genai` (not `google.generativeai` — deprecated). `.env` is gitignored.
+Edit `backend/.env` with your API key:
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
+```
 
-## Team Roles (4)
+Run the backend server:
+```bash
+python app.py
+# Backend runs on http://localhost:5000
+```
 
-1. AI Integration & Prompt Engineering (AI major)
-2. AI Testing, Accuracy & Waste Content DB (AI major)
-3. Research, DB & Recycling Center Data (IS major)
-4. Lead Frontend & Backend (SE major)
+### 2. Frontend Setup
 
-## Risks & Mitigations
+Since the frontend is built with vanilla HTML/CSS and ES modules, open `frontend/index.html` directly in your browser, or serve it using any static server:
 
-- API rate limit → use free tier wisely, cache repeats
-- Low accuracy → manual override option
-- Time crunch → MVP first, bonus optional
-
-## Evaluation Criteria
-
-Innovation, Technical Implementation, UX (one-click scan), SDG alignment, Impact in SEA.
-
-## What's Left
-
-Deploy (Vercel/Netlify + Render), Maps integration, history, dashboard, caching.
+```bash
+# Using Python
+cd frontend
+python -m http.server 3000
+# Visit http://localhost:3000
+```
 
 ---
 
-*SortIt Team | Hackathon | Sep 2026*
+## 🧪 Running Tests
+
+SortIt includes unit and integration tests covering the classification parser, typed exception hierarchy, and API routes.
+
+```bash
+cd backend
+pytest
+```
+
+---
+
+## 🔌 API Contract
+
+### `POST /analyze`
+Analyzes a waste image via Gemini Vision.
+- **Request:** `multipart/form-data` containing `image` (binary file)
+- **Response (200 OK):**
+  ```json
+  {
+    "waste_type": "plastic",
+    "waste_name": "PET Bottle",
+    "waste_detail": "Type 1 Recyclable Plastic",
+    "confidence": 92,
+    "instructions": [
+      "Rinse bottle thoroughly.",
+      "Remove cap and crush.",
+      "Place in blue recycling bin."
+    ],
+    "tip": "Crushing plastic bottles saves space in recycling bins!",
+    "below_threshold": false
+  }
+  ```
+
+### `POST /correct`
+Logs an audit record of user-suggested classification overrides.
+- **Request (200 OK):**
+  ```json
+  {
+    "original_result": { "waste_type": "plastic", "waste_name": "Bottle" },
+    "corrected_waste_type": "glass",
+    "note": "Item is actually a glass bottle",
+    "timestamp": "2026-09-04T12:00:00Z"
+  }
+  ```
+
+### `GET /`
+Health check and configuration status.
+
+---
+
+## 👥 Hackathon Team (Gayatama UNESA 2026)
+
+- **AI Integration & Prompt Engineering:** Gemini prompt design & schema constraints
+- **AI Testing, Accuracy & Waste DB:** Category definitions & testing datasets
+- **Research, SDGs & Localization:** SEA waste regulations & drop-off guidelines
+- **Lead Full-Stack Development:** Flask backend, modular ES-frontend & architecture
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

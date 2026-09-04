@@ -1,5 +1,6 @@
 # Ignore docs directory containing internal PRDs & specs
 docs/
+backend/logs/
 
 # Python / Environment / IDE
 __pycache__/

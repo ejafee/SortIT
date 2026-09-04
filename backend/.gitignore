@@ -1,0 +1,10 @@
+# API Key dan environment variables
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+env/

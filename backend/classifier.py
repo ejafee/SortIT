@@ -47,7 +47,7 @@ def _get_genai_client() -> genai.Client:
 
 def _get_model_name() -> str:
     """Return GEMINI_MODEL from env, falling back to a sensible default."""
-    return os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    return os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
 
 
 def _clean_response_text(text: str) -> str:

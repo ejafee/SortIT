@@ -13,6 +13,8 @@ export function saveScan(scanRecord) {
     waste_type: scanRecord.waste_type,
     waste_name: scanRecord.waste_name,
     confidence: scanRecord.confidence,
+    is_error: !!scanRecord.is_error,
+    error_message: scanRecord.error_message || null,
     was_corrected: !!scanRecord.was_corrected,
     corrected_type: scanRecord.corrected_type || null,
   };
@@ -61,6 +63,7 @@ export function getStats() {
     };
   }
 
+  const successfulScans = history.filter(s => !s.is_error);
   let totalConf = 0;
   let corrections = 0;
   const byType = {
@@ -73,7 +76,7 @@ export function getStats() {
     unknown: 0,
   };
 
-  history.forEach(s => {
+  successfulScans.forEach(s => {
     totalConf += Number(s.confidence) || 0;
     if (s.was_corrected) corrections++;
     const type = s.corrected_type || s.waste_type || 'unknown';
@@ -82,7 +85,7 @@ export function getStats() {
 
   return {
     total,
-    avgConfidence: Math.round(totalConf / total),
+    avgConfidence: successfulScans.length ? Math.round(totalConf / successfulScans.length) : 0,
     correctionsCount: corrections,
     byType,
   };

@@ -59,6 +59,19 @@ export function renderHistory() {
 
   list.innerHTML = '';
   history.forEach(item => {
+    if (item.is_error) {
+      const el = document.createElement('div');
+      el.className = 'history-item';
+      el.innerHTML = `
+        <div>
+          <div><strong>Scan Failed</strong></div>
+          <div class="history-meta">${formatDate(item.timestamp)} · ${escapeHtml(item.error_message || 'Unknown error')}</div>
+        </div>
+        <span class="history-tag error">Error</span>
+      `;
+      list.appendChild(el);
+      return;
+    }
     const type = item.corrected_type || item.waste_type || 'unknown';
     const el = document.createElement('div');
     el.className = 'history-item';

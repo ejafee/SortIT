@@ -1,8 +1,13 @@
 """Unit tests for the classifier JSON validation/parsing logic."""
 import pytest
 
-from classifier import _validate_and_normalize, _clean_response_text
+from classifier import _get_model_name, _validate_and_normalize, _clean_response_text
 from exceptions import ClassificationParseError, GeminiAPIError
+
+
+def test_default_model_is_gemini_35_flash(monkeypatch):
+    monkeypatch.delenv("GEMINI_MODEL", raising=False)
+    assert _get_model_name() == "gemini-3.5-flash"
 
 
 def test_clean_response_strips_json_fence():

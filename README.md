@@ -96,8 +96,12 @@ cp .env.example .env
 Edit `backend/.env` with your API key:
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-2.5-flash
+GEMINI_MODEL=gemini-3.5-flash
 ```
+
+`gemini-3.5-flash` is the default model when `GEMINI_MODEL` is omitted. Set `GEMINI_MODEL` to another available Gemini model to override it.
+
+If a scan fails, SortIt keeps the user-facing error message visible and saves the failed attempt in **History** with an **Error** flag. Select **See error details** in the error banner to open that history entry.
 
 Run the backend server:
 ```bash

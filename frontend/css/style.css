@@ -368,6 +368,8 @@ main { padding: 20px 16px 100px; max-width: 520px; margin: 0 auto; }
   text-transform: capitalize;
 }
 .history-tag.corrected { background: #FFF3E0; color: var(--orange); }
+.history-tag.error { background: #FFEBEE; color: var(--red); }
+.error-banner a { color: inherit; text-decoration: underline; font-weight: 900; }
 
 .empty-state {
   text-align: center;

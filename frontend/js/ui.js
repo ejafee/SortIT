@@ -40,9 +40,20 @@ export function resetAnalyzeButton() {
   btn.disabled = false;
 }
 
-export function showError(message) {
+export function showError(message, showDetails = false) {
   const banner = document.getElementById('error-banner');
   banner.textContent = '⚠️ ' + message;
+  if (showDetails) {
+    const link = document.createElement('a');
+    link.href = '#tab-history';
+    link.textContent = 'See error details';
+    link.addEventListener('click', event => {
+      event.preventDefault();
+      switchTab('history');
+      document.getElementById('tab-history')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    banner.append(' ', link);
+  }
   banner.style.display = 'block';
 }
 

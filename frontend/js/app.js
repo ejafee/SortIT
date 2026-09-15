@@ -73,14 +73,22 @@ async function handleAnalyze() {
     const saved = saveScan(record);
     setCurrentScanRecord(saved);
   } catch (err) {
+    const errorDetails = err.message || 'Could not reach the server. Is the backend running?';
     const message = err.error_type === 'GeminiAPIError'
       ? 'AI service is unavailable right now. Please try again in a moment.'
       : err.error_type === 'InvalidImageError'
       ? 'Image could not be read. Please retake the photo.'
       : err.error_type === 'ClassificationParseError'
       ? 'AI response was unclear. Please retake the photo with a clearer angle.'
-      : (err.message || 'Could not reach the server. Is the backend running?');
-    showError(message);
+      : errorDetails;
+    saveScan({
+      waste_type: 'unknown',
+      waste_name: 'Scan Failed',
+      confidence: null,
+      is_error: true,
+      error_message: errorDetails,
+    });
+    showError(message, true);
   } finally {
     resetAnalyzeButton();
   }

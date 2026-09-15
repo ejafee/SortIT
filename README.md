@@ -10,7 +10,7 @@
 
 ---
 
-## 📌 Problem & Impact
+## Problem & Impact
 
 Improper waste management in Southeast Asia leads to recyclable materials filling up landfills. Everyday consumers often lack accessible, instant guidance on correct segregation. **SortIt** bridges this gap by turning any smartphone camera into an intelligent recycling assistant aligned with:
 
@@ -20,18 +20,18 @@ Improper waste management in Southeast Asia leads to recyclable materials fillin
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
-- 📸 **Camera-Only Capture:** Live camera capture flow designed to encourage real-world waste scanning.
-- 🤖 **Gemini AI Classification:** Vision-based classification across 7 categories (`plastic`, `paper`, `glass`, `organic`, `ewaste`, `hazardous`, `unknown`).
-- 🎯 **Confidence Scoring & Threshold Alerts:** Transparent model-reported accuracy percentage, displaying warning banners if below threshold (<60%).
-- ✏️ **Manual Correction & Feedback Loop:** Users can suggest corrections which are logged to an audit trail (`POST /correct`) for dataset improvement.
-- 📊 **Scan History & Stats Dashboard:** Client-side scan log and breakdown chart (backed by an abstracted storage interface).
-- 🛡️ **Production-Grade Architecture:** Custom exception hierarchy, typed Python backend, structured rotating file logging, and comprehensive `pytest` test suite.
+- **Camera-Only Capture:** Live camera capture flow designed to encourage real-world waste scanning.
+- **Gemini AI Classification:** Vision-based classification across 7 categories (`plastic`, `paper`, `glass`, `organic`, `ewaste`, `hazardous`, `unknown`).
+- **Confidence Scoring & Threshold Alerts:** Transparent model-reported accuracy percentage, displaying warning banners if below threshold (<60%).
+- **Manual Correction & Feedback Loop:** Users can suggest corrections which are logged to an audit trail (`POST /correct`) for dataset improvement.
+- **Scan History & Stats Dashboard:** Client-side scan log and breakdown chart (backed by an abstracted storage interface).
+- **Production-Grade Architecture:** Custom exception hierarchy, typed Python backend, structured rotating file logging, and comprehensive `pytest` test suite.
 
 ---
 
-## 🏗️ Architecture & Folder Structure
+## Architecture & Folder Structure
 
 ```
 SortIT/
@@ -67,7 +67,7 @@ SortIT/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -118,7 +118,7 @@ python -m http.server 3000
 
 ---
 
-## 🧪 Running Tests
+## Running Tests
 
 SortIt includes unit and integration tests covering the classification parser, typed exception hierarchy, and API routes.
 
@@ -129,7 +129,7 @@ pytest
 
 ---
 
-## 🔌 API Contract
+## API Contract
 
 ### `POST /analyze`
 Analyzes a waste image via Gemini Vision.
@@ -168,6 +168,6 @@ Health check and configuration status.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
